@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnakeGame</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=VT323&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="snake.css">
+</head>
+<style>
+    html{
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling */
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.canvas{
+    /* height: 500px;
+    width: 800px; */
+    
+    background-color: rgb(220, 220, 182);
+    display: block;
+    touch-action: none;
+}
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    /* margin-top: 15vh; */
+    border: 10px solid black;
+    width: min-content;
+    margin-top: 100px;
+    margin: 0;
+    padding: 0;
+}
+.countbox{
+    display: flex;;
+    height: 200px;
+    width: 200px;
+    border: 7px solid black;
+    font-size: 200px;
+    margin-top: -500px;
+    margin-left: 840px;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: green;
+
+    
+}
+
+.start{
+    font-family: "VT323", monospace;
+    background-color: rgb(197, 197, 160);
+}
+.gameover{
+    display: none;
+    font-size: 200px;
+    margin-left: 5px;
+    margin-top: -400px;
+
+    
+}
+body{
+    font-family: "VT323", monospace;
+    background-color: rgb(225, 225, 155);
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling */
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    
+}
+</style>
+
+<body>
+    
+    <div class="container">
+        
+        <canvas class="canvas" height="500px" width="800px"></canvas>
+    </div>
+    <div class="box2">
+        <button class="start">START</button>
+        <div class="countbox"></div>
+    </div>
+    <div class="gameover">GAMEOVER</div>
+    
+    <script>
+        const canvas = document.querySelector('.canvas');
+ let ctx = canvas.getContext('2d');
+ let snake = [{x:250, y:250}];       
+ let food = {x:150, y:150};  
+ let grid = 25;
+ let dx = grid;
+ let dy = 0;
+ let count =0;
+//  ........................................................................................
+
+function SaapKhel(){
+    const SaapKaMuu = {x: snake[0].x + dx, y: snake[0].y + dy};
+
+    if(SaapKaMuu.x<0 || SaapKaMuu.x>=canvas.width || SaapKaMuu.y<0 || SaapKaMuu.y>=canvas.width){
+        gameoversound();
+        let gameover = document.querySelector('.gameover')
+        gameover.style.display = 'block';
+        setTimeout(()=>{
+            document.location.reload();
+        },2000);
+        return;
+    }
+    snake.unshift(SaapKaMuu);
+
+
+    if(SaapKaMuu.x === food.x && SaapKaMuu.y === food.y){
+        playTickSound();
+        food.x = Math.floor(Math.random()*10)*grid;
+        food.y = Math.floor(Math.random()*10)*grid;
+        count++;
+        let countbox = document.querySelector('.countbox');
+        countbox.innerText = count;
+        
+    }
+    else{
+        snake.pop();
+    }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = 'green';
+    snake.forEach(snakePart =>ctx.fillRect(snakePart.x,snakePart.y,grid,grid));
+    ctx.fillStyle = 'red';
+    ctx.fillRect(food.x,food.y,grid,grid)
+}
+
+function SaapDirection(e){
+  if(e.key === 'ArrowUp' && dy === 0){
+    dx = 0;
+    dy = -grid;
+  }
+  if(e.key === 'ArrowDown' && dy === 0){
+    dx = 0;
+    dy = grid;
+  }
+  if(e.key === 'ArrowLeft' && dx === 0){
+    dy = 0;
+    dx = -grid;
+  }
+  if(e.key === 'ArrowRight' && dx === 0){
+    dy = 0;
+    dx = grid;
+  }
+}
+ document.addEventListener('keydown', SaapDirection);
+ document.querySelector('.start').addEventListener('click',start );
+ document.addEventListener('keydown',function(e){
+    if(e.key === 'Enter'){
+        start();
+
+    }
+ })
+
+ 
+    let audio = new Audio('./achievement-video-game-type-1-230515.mp3')
+    function playTickSound() {
+        audio.play();
+    }
+    
+    let audioo = new Audio('./game-over-160612.mp3')
+    function gameoversound() {
+        audioo.play();
+    }
+    
+
+
+function start(){
+setInterval(SaapKhel,100);
+}
+    </script>
+
+
+
+</body>
+
+</html>
